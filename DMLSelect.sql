@@ -1,0 +1,66 @@
+SELECT LoginId,JobTitle,HumanResources.JobCandidate.Resume
+FROM HumanResources.Employee,HumanResources.JobCandidate
+WHERE HumanResources.Employee.BusinessEntityID=HumanResources.JobCandidate.BusinessEntityID
+
+
+SELECT HumanResources.JobCandidate.Resume,HumanResources.EmployeePayHistory.Rate
+FROM HumanResources.JobCandidate,HumanResources.EmployeePayHistory,HumanResources.Employee
+WHERE Employee.BusinessEntityID=JobCandidate.BusinessEntityID 
+and 
+Employee.BusinessEntityID=EmployeePayHistory.BusinessEntityID
+
+SELECT HumanResources.Department.Name,HumanResources.JobCandidate.Resume
+FROM HumanResources.Department,HumanResources.EmployeeDepartmentHistory,
+HumanResources.Employee,HumanResources.JobCandidate
+WHERE
+HumanResources.Department.DepartmentID=HumanResources.EmployeeDepartmentHistory.DepartmentID
+AND
+HumanResources.EmployeeDepartmentHistory.BusinessEntityID=HumanResources.Employee.BusinessEntityID
+AND
+HumanResources.Employee.BusinessEntityID=HumanResources.JobCandidate.BusinessEntityID
+
+SELECT HumanResources.EmployeeDepartmentHistory.BusinessEntityID,HumanResources.EmployeeDepartmentHistory.ShiftID,COUNT(*)
+FROM HumanResources.EmployeeDepartmentHistory
+GROUP BY HumanResources.EmployeeDepartmentHistory.BusinessEntityID,HumanResources.EmployeeDepartmentHistory.ShiftID
+
+SELECT HumanResources.Employee.LoginId,
+HumanResources.EmployeeDepartmentHistory.BusinessEntityID,
+HumanResources.EmployeeDepartmentHistory.ShiftID,
+COUNT(*)
+FROM HumanResources.EmployeeDepartmentHistory,
+HumanResources.Employee
+WHERE 
+HumanResources.Employee.BusinessEntityID=HumanResources.EmployeeDepartmentHistory.BusinessEntityID
+AND
+HumanResources.EmployeeDepartmentHistory.ShiftID<>1
+GROUP BY
+HumanResources.EmployeeDepartmentHistory.BusinessEntityID,
+HumanResources.EmployeeDepartmentHistory.ShiftID,
+HumanResources.Employee.LoginId
+HAVING COUNT(*)>1 
+
+
+SELECT MAX(DATEDIFF(YEAR,BirthDate,GETDATE()))
+FROM HumanResources.Employee
+
+SELECT MIN(BirthDate)
+FROM HumanResources.Employee
+
+SELECT MAX(Rate)
+FROM HumanResources.EmployeePayHistory,HumanResources.Employee,HumanResources.EmployeeDepartmentHistory
+WHERE 
+HumanResources.EmployeePayHistory.BusinessEntityID=HumanResources.Employee.BusinessEntityID
+AND
+HumanResources.Employee.BusinessEntityID=HumanResources.EmployeeDepartmentHistory.BusinessEntityID
+AND HumanResources.EmployeeDepartmentHistory.ShiftID=2
+
+SELECT AVG(Rate)
+FROM HumanResources.EmployeePayHistory
+
+SELECT AVG(Rate)
+FROM HumanResources.EmployeePayHistory,HumanResources.Employee,HumanResources.EmployeeDepartmentHistory
+WHERE 
+HumanResources.EmployeePayHistory.BusinessEntityID=HumanResources.Employee.BusinessEntityID
+AND
+HumanResources.Employee.BusinessEntityID=HumanResources.EmployeeDepartmentHistory.BusinessEntityID
+AND HumanResources.EmployeeDepartmentHistory.ShiftID<>1
